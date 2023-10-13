@@ -26,7 +26,9 @@ fatal() {
 
 read_os() {
   ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
+  # sles
   VERSION=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
+  # 15.5
   info "OS identified as $ID - $VERSION"
 }
 
@@ -102,6 +104,7 @@ do_download() {
     
     install_awscli
     ;;
+
   amzn)
     info "Installing RKE2 for Amazon Linux"
     # awscli already present, only need rke2
@@ -121,7 +124,20 @@ do_download() {
   *)
     fatal "$${ID} $${VERSION} is not currently supported"
     ;;
+
+  sles | opensuse*)
+    info "Installing RKE2 for SuSE-based distro"
+    # TODO: Determine minimum supported version, for now just carry on assuming ignorance
+    
+    zypper install -y unzip
+
+    install_awscli
+    
+    INSTALL_RKE2_METHOD='tar' INSTALL_RKE2_TYPE="${type}" ./install.sh
+    ;;
+
   esac
+
   rm -f install.sh
 }
 
