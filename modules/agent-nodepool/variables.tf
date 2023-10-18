@@ -57,7 +57,7 @@ variable "block_device_mappings" {
 
   default = {
     "size" = 30
-    type   = "gp2"
+    type   = "gp3"
   }
 }
 
